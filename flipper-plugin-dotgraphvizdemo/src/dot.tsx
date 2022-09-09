@@ -89,21 +89,33 @@ function subgraph(workerGroupNode: Node): string {
         label="${workerGroupNode.name}\n${cost}ms";
         labelloc=tc;
     `
+    let edgeMap = new Map<String, Set<String>>();
 
     workerGroupNode.children?.map(child => {
-        subgraph += traverse(child)
+        subgraph += traverse(child, edgeMap)
     })
 
     subgraph += "}";
     return subgraph
 }
 
-function traverse(node: Node): string {
-    let dot = defineNode(node);
+function traverse(node: Node, edgeMap: Map<String, Set<String>>): string {
+    let dot = '';
+    let childSet = edgeMap.get(node.name) || new Set<String>();
+
+    if (!edgeMap.has(node.name)) {
+        dot = defineNode(node);
+        edgeMap.set(node.name, childSet);
+    }
+
     node.children?.map(child => {
-        dot += traverse(child)
-        dot += defineEdge(node, child)
+        dot += traverse(child, edgeMap)
+        if (!childSet.has(child.name)) {
+            childSet.add(child.name);
+            dot += defineEdge(node, child);
+        }
     })
+
     return dot
 }
 

@@ -3,11 +3,11 @@ import { useEffect, useMemo } from 'react';
 import { graphviz } from 'd3-graphviz';
 
 
-function injectScript(src: string, type? : string) {
+function injectScript(src: string, type?: string) {
   const scriptElement = document.createElement('script')
   scriptElement.src = src;
   if (type) {
-    scriptElement.type= type;
+    scriptElement.type = type;
   }
   document.head.appendChild(scriptElement);
 }
@@ -56,14 +56,21 @@ const Graphviz = ({ dot, className, options = {} }: IGraphvizProps) => {
 
   useEffect(() => {
     graphviz(`#${id}`)
-    .options({
-      ...defaultOptions,
-      ...options,
-    })
-    .renderDot(dot);
+      .options({
+        ...defaultOptions,
+        ...options,
+      })
+      .renderDot(dot);
   }, [dot, options]);
 
-  return <div className={className} id={id} />;
+  return <div 
+    className={className} 
+    id={id} 
+    style={{
+      height: '100%', 
+      width: '100%' 
+    }} 
+  />;
 };
 
 

@@ -129,7 +129,7 @@ export function plugin(client: PluginClient<Events, {}>) {
 
     let dot = digraph(process, workerNodes);
     console.log(`current select process=${process} workerNodes=${JSON.stringify(workerNodes)}, dot below`)
-    console.log(`${dot}`)
+    // console.log(`${dot}`)
     selectedProcessGraph.set(dot)
 
     tableRows.clear();
@@ -213,6 +213,9 @@ export function Component() {
   const processAndWorkerNodes = useValue(instance.processAndWorkerNodes);
   const selectedProcess = useValue(instance.selectedProcess)
   let selectedProcessGraph = useValue(instance.selectedProcessGraph)
+  if (selectedProcessGraph == undefined) {
+    console.log(`selectedProcess=${selectedProcess} selectedProcessGraph is undefined`)
+  }
   const onSelectedProcess = instance.onSelectedProcess
 
   const tableColumns = useValue(instance.tableColumns)
@@ -247,7 +250,7 @@ export function Component() {
       </Toolbar>
 
       {
-        'graph' == currentTab ? <Layout.Container style={{ margin: 8 }}>
+        'graph' == currentTab ? <Layout.Container grow style={{ margin: 8 }}>
           <div style={{ marginLeft: 8, marginBottom: 5 }}>
             <Tag color={styles.UI.color}>UI</Tag>
             <Tag color={styles.UI_ENQUEUE.color}>UI_ENQUEUE</Tag>
@@ -256,7 +259,16 @@ export function Component() {
             <Tag color={styles.ERROR.color}>执行出错</Tag>
             <Tag style={ styles.SKIP }>跳过的任务</Tag>
           </div>
-          <Graphviz dot={selectedProcessGraph} options={{ fit: true, width: '100%', height: '100%', zoom: true }} />
+          <Graphviz 
+            dot={selectedProcessGraph} 
+            options={{ 
+              fit: true, 
+              width: '100%',
+              height: '100%', 
+              zoom: true,
+              zoomScaleExtent: [0.5, 10]
+            }} 
+          />
         </Layout.Container> : null
       }
 
